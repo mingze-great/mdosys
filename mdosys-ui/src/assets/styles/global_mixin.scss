@@ -1,0 +1,72 @@
+@mixin node_shadow {
+  box-sizing: border-box;
+  box-shadow: 2px 2px 8px 1px rgba(230, 230, 230, 0.8);
+  // box-shadow: none;
+}
+
+@mixin button_icon {
+  @include button_transition(0.09s);
+  cursor: pointer;
+  border-radius: 16%;
+  text-align: center;
+  &:hover {
+    color: rgb(64, 158, 255);
+    background-color: rgb(235, 235, 235);
+  }
+  &:active {
+    color: rgb(0, 0, 0);
+    background-color: rgb(230, 230, 230);
+  }
+}
+
+@mixin text_over_flow($text_align: center) {
+  white-space: nowrap;
+  /*强制span不换行*/
+  display: inline-block;
+  /*将span当做块级元素对待*/
+  overflow: hidden;
+  /*超出宽度部分隐藏*/
+  text-overflow: ellipsis;
+  /*超出部分以点号代替*/
+  text-align: $text_align;
+}
+
+@mixin button_transition($duration: 0.15s) {
+  transition-property: all;
+  transition-duration: $duration;
+  transition-timing-function: ease-in-out;
+}
+
+@mixin flex_box(
+  $direction: row,
+  $align-items: center,
+  $justify-content: start
+) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: $align-items;
+  justify-content:  $justify-content;
+}
+
+@mixin  shake($range: 5px) {
+  @keyframes shock {
+    0% {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    50%{
+        margin-left: 0px;
+        margin-right: $range;
+    }
+    100% {
+        margin-left: $range;
+        margin-right: 0px;
+    }
+  }
+  animation-delay: 0s;
+  animation-name: shock;
+  animation-duration: .1s;
+  animation-iteration-count: 3;
+  animation-direction: normal;
+  animation-timing-function: linear;
+}

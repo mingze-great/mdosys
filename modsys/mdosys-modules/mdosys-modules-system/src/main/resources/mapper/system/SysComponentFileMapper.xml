@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.system.mapper.SysComponentFileMapper">
+    
+    <resultMap type="SysComponentFile" id="SysComponentFileResult">
+        <result property="id"    column="id"    />
+        <result property="compId"    column="comp_id"    />
+        <result property="name"    column="name"    />
+        <result property="path"    column="path"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="size"    column="size"    />
+        <result property="analysisStr"    column="analysis_str"    />
+        <result property="type"    column="type"    />
+    </resultMap>
+
+    <sql id="selectSysComponentFileVo">
+        select id, comp_id, name, path, create_time, size, analysis_str, type from sys_component_file
+    </sql>
+
+    <select id="selectSysComponentFileList" parameterType="SysComponentFile" resultMap="SysComponentFileResult">
+        <include refid="selectSysComponentFileVo"/>
+        <where>  
+            <if test="compId != null "> and comp_id = #{compId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="path != null  and path != ''"> and path = #{path}</if>
+            <if test="size != null "> and size = #{size}</if>
+            <if test="analysisStr != null  and analysisStr != ''"> and analysis_str = #{analysisStr}</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+        </where>
+    </select>
+    
+    <select id="selectSysComponentFileById" parameterType="Long" resultMap="SysComponentFileResult">
+        <include refid="selectSysComponentFileVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectFilePathsByCompId" parameterType="Long" resultType="java.lang.String">
+        select path from sys_component_file
+        where comp_id = #{compId}
+    </select>
+        
+    <insert id="insertSysComponentFile" parameterType="SysComponentFile" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_component_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="compId != null">comp_id,</if>
+            <if test="name != null">name,</if>
+            <if test="path != null">path,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="size != null">size,</if>
+            <if test="analysisStr != null">analysis_str,</if>
+            <if test="type != null">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="compId != null">#{compId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="path != null">#{path},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="size != null">#{size},</if>
+            <if test="analysisStr != null">#{analysisStr},</if>
+            <if test="type != null">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysComponentFile" parameterType="SysComponentFile">
+        update sys_component_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="compId != null">comp_id = #{compId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="path != null">path = #{path},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="size != null">size = #{size},</if>
+            <if test="analysisStr != null">analysis_str = #{analysisStr},</if>
+            <if test="type != null">size = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysComponentFileById" parameterType="Long">
+        delete from sys_component_file where id = #{id}
+    </delete>
+
+    <delete id="deleteSysComponentFileByIds" parameterType="String">
+        delete from sys_component_file where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <delete id="deleteSysComponentFileByCompId" parameterType="Long">
+        delete from sys_component_file where comp_id = #{id}
+    </delete>
+
+    <update id="updateSysComponentFileType" parameterType="SysComponentFile">
+        update sys_component_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <select id="selectSysComponentFilePath" parameterType="Long" resultMap="SysComponentFileResult">
+        <include refid="selectSysComponentFileVo"/>
+        where comp_id = #{id} and name = 'app.jar' and type = '执行文件'
+
+    </select>
+</mapper>

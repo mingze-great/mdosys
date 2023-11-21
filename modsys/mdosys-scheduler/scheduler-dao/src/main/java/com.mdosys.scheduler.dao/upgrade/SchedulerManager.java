@@ -1,0 +1,123 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.mdosys.scheduler.dao.upgrade;
+
+import com.mdosys.scheduler.spi.enums.DbType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Service;
+
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.List;
+
+@Service
+@Profile("shell-cli")
+public class SchedulerManager {
+    private static final Logger logger = LoggerFactory.getLogger(SchedulerManager.class);
+
+    private final UpgradeDao upgradeDao;
+
+    public SchedulerManager(DataSource dataSource, List<UpgradeDao> daos) throws Exception {
+        final DbType type = getCurrentDbType(dataSource);
+        upgradeDao = daos.stream()
+                .filter(it -> it.getDbType() == type)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException(
+                        "Cannot find UpgradeDao implementation for db type: " + type));
+    }
+
+    private DbType getCurrentDbType(DataSource dataSource) throws Exception {
+        try (Connection conn = dataSource.getConnection()) {
+            String name = conn.getMetaData().getDatabaseProductName().toUpperCase();
+            return DbType.valueOf(name);
+        }
+    }
+
+    public void initScheduler() {
+        this.initSchedulerSchema();
+    }
+
+    /**
+     * whether schema is initialized
+     * 
+     * @return true if schema is initialized
+     */
+    public boolean schemaIsInitialized() {
+        // Determines whether the scheduler table structure has been init
+        if (upgradeDao.isExistsTable("t_escheduler_version")
+                || upgradeDao.isExistsTable("t_ds_version")
+                || upgradeDao.isExistsTable("t_escheduler_queue")) {
+            logger.info("The database has been initialized. Skip the initialization step");
+            return true;
+        }
+        return false;
+    }
+
+    public void initSchedulerSchema() {
+        logger.info("Start initializing the Scheduler manager table structure");
+        upgradeDao.initSchema();
+    }
+
+    public void upgradeScheduler() throws IOException {
+        // Gets a list of all upgrades
+        List<String> schemaList = SchemaUtils.getAllSchemaList();
+        if (schemaList == null || schemaList.size() == 0) {
+            logger.info("There is no schema to upgrade!");
+        } else {
+            String version;
+            // Gets the version of the current system
+            if (upgradeDao.isExistsTable("t_escheduler_version")) {
+                version = upgradeDao.getCurrentVersion("t_escheduler_version");
+            } else if (upgradeDao.isExistsTable("t_ds_version")) {
+                version = upgradeDao.getCurrentVersion("t_ds_version");
+            } else if (upgradeDao.isExistsColumn("t_escheduler_queue", "create_time")) {
+                version = "1.0.1";
+            } else if (upgradeDao.isExistsTable("t_escheduler_queue")) {
+                version = "1.0.0";
+            } else {
+                logger.error("Unable to determine current software version, so cannot upgrade");
+                throw new RuntimeException("Unable to determine current software version, so cannot upgrade");
+            }
+            // The target version of the upgrade
+            String schemaVersion = "";
+            for (String schemaDir : schemaList) {
+                schemaVersion = schemaDir.split("_")[0];
+                if (SchemaUtils.isAGreatVersion(schemaVersion, version)) {
+                    logger.info("upgrade Scheduler metadata version from {} to {}", version, schemaVersion);
+                    logger.info("Begin upgrading Scheduler's table structure");
+                    upgradeDao.upgradeScheduler(schemaDir);
+                    if ("1.3.0".equals(schemaVersion)) {
+                        upgradeDao.upgradeSchedulerWorkerGroup();
+                    } else if ("1.3.2".equals(schemaVersion)) {
+                        upgradeDao.upgradeSchedulerResourceList();
+                    } else if ("2.0.0".equals(schemaVersion)) {
+                        upgradeDao.upgradeSchedulerTo200(schemaDir);
+                    }
+                    version = schemaVersion;
+                }
+            }
+        }
+
+        // Assign the value of the version field in the version table to the version of
+        // the product
+        upgradeDao.updateVersion(SchemaUtils.getSoftVersion());
+    }
+}

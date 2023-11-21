@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.system.mapper.SysComponentMenuMapper">
+
+    <resultMap type="SysComponentMenu" id="SysComponentMenuResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="icon"    column="icon"    />
+        <result property="userId"    column="user_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="publicMenu"    column="public_Menu"    />
+        <result property="createBy"    column="user_name"    />
+    </resultMap>
+
+    <sql id="selectSysComponentMenuVo">
+        select id, name, parent_id, icon, user_id, create_time, update_time, public_Menu from sys_component_menu
+    </sql>
+
+    <select id="selectSysComponentMenuList" parameterType="SysComponentMenu" resultMap="SysComponentMenuResult">
+<!--        <include refid="selectSysComponentMenuVo"/>-->
+        SELECT * FROM sys_component_menu LEFT JOIN sys_user ON sys_component_menu.user_id = sys_user.user_id
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+        </where>
+        order by parent_id desc
+    </select>
+
+    <insert id="insertSysComponentMenu" parameterType="SysComponentMenu" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_component_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="icon != null">icon,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="icon != null">#{icon},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysComponentMenu" parameterType="SysComponentMenu">
+        update sys_component_menu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="icon != null">icon = #{icon},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysComponentMenuById" parameterType="Long">
+        delete from sys_component_menu where id = #{id}
+    </delete>
+
+</mapper>

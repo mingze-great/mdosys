@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.system.mapper.SysSpaceFileMapper">
+
+    <resultMap type="SysSpaceFile" id="SysSpaceFileResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="type"    column="type"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="size"    column="size"    />
+        <result property="path"    column="path"    />
+        <result property="fatherId"    column="father_id"    />
+        <result property="fileType"    column="file_type"    />
+    </resultMap>
+
+    <sql id="selectSysSpaceFileVo">
+        select id, user_id, name, type, create_time, size, path, father_id, file_type from sys_space_file
+    </sql>
+
+    <select id="selectSysSpaceFileList" parameterType="SysSpaceFile" resultMap="SysSpaceFileResult">
+        <include refid="selectSysSpaceFileVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="type != null  and type != ''"> and type = #{type}</if>
+            <if test="size != null "> and size = #{size}</if>
+            <if test="path != null  and path != ''"> and path = #{path}</if>
+            <if test="fatherId != null"> and father_id = #{fatherId}</if>
+            <if test="fileType != null  and fileType != ''"> and file_type = #{fileType}</if>
+        </where>
+        order by file_type asc
+    </select>
+
+    <select id="selectSysSpaceFileById" parameterType="Long" resultMap="SysSpaceFileResult">
+        <include refid="selectSysSpaceFileVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertSysSpaceFile" parameterType="SysSpaceFile" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_space_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="name != null">name,</if>
+            <if test="type != null">type,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="size != null">size,</if>
+            <if test="path != null">path,</if>
+            <if test="fatherId != null">father_id,</if>
+            <if test="fileType != null">file_type,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="type != null">#{type},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="size != null">#{size},</if>
+            <if test="path != null">#{path},</if>
+            <if test="fatherId != null">#{fatherId},</if>
+            <if test="fileType != null">#{fileType},</if>
+        </trim>
+    </insert>
+
+    <update id="updateSysSpaceFile" parameterType="SysSpaceFile">
+        update sys_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="type != null">type = #{type},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="size != null">size = #{size},</if>
+            <if test="path != null">path = #{path},</if>
+            <if test="fatherId != null">father_id = #{fatherId},</if>
+            <if test="fileType != null">file_type = #{fileType},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysSpaceFileById" parameterType="Long">
+        delete from sys_file where id = #{id}
+    </delete>
+
+    <delete id="deleteSysSpaceFileByIds" parameterType="String">
+        delete from sys_file where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

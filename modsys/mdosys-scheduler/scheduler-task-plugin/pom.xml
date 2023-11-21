@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>mdosys-scheduler</artifactId>
+        <groupId>com.mdosys</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>scheduler-task-plugin</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>scheduler-task-api</module>
+        <module>scheduler-task-shell</module>
+        <module>scheduler-task-datax</module>
+        <module>scheduler-task-flink</module>
+        <module>scheduler-task-http</module>
+        <module>scheduler-task-mr</module>
+        <module>scheduler-task-python</module>
+        <module>scheduler-task-spark</module>
+        <module>scheduler-task-sql</module>
+        <module>scheduler-task-sqoop</module>
+        <module>scheduler-task-procedure</module>
+        <module>scheduler-task-pigeon</module>
+    </modules>
+
+</project>

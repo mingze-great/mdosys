@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.monitors.mapper.MonitorProcessMapper">
+    <resultMap type="MonitorProcessItem" id="MonitorProcessItemResult">
+        <result property="id"    column="id"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="taskType"    column="task_type"    />
+        <result property="creator"    column="creator"    />
+        <result property="taskProgress"    column="task_progress"    />
+        <result property="createTime"    column="creator_time"    />
+        <result property="runLog"    column="run_log"    />
+        <result property="runTime"    column="run_time"    />
+        <result property="runFlag"    column="run_flag"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="startTime"    column="start_time"    />
+        <result property="hasChildren"    column="has_children"    />
+    </resultMap>
+
+    <select id="selectMonitorProcessList" parameterType="MonitorProcessItem" resultMap="MonitorProcessItemResult">
+        select * from mdosys_monitor_process
+        <where>
+            <if test="inputQuery!=null"> or task_name like  concat('%',#{inputQuery},'%')</if>
+            <if test="inputQuery!=null"> or task_type like  concat('%',#{inputQuery},'%')</if>
+            <if test="inputQuery!=null"> or creator like  concat('%',#{inputQuery},'%')</if>
+            <if test="taskName!=null">and task_name like  concat('%',#{taskName},'%')</if>
+            <if test="taskType!=null">and task_type like  concat('%',#{taskType},'%')</if>
+            <if test="creator!=null">and creator like  concat('%',#{creator},'%')</if>
+
+        </where>
+    </select>
+
+<!--    奇怪的问题，这个地方的mapper出现问题会导致其他地方mapper报错-->
+    <select id="selectMonitorProgressById" parameterType="MonitorProcessItem" resultMap="MonitorProcessItemResult">
+        select * from mdosys_monitor_process where id=#{id}
+    </select>
+    
+    <update id="updateMonitorProcess" parameterType="MonitorProcessItem">
+        update mdosys_monitor_process
+        <trim prefix="SET"  suffixOverrides=",">
+            <if test="taskProgress != null">task_progress = #{taskProgress},</if>
+            <if test="runTime != null">run_time = #{runTime},</if>
+            <if test="runFlag != null">run_flag = #{runFlag},</if>
+            <if test="endTime != null">end_time = #{endTime},</if>
+            <if test="startTime != null">start_time = #{startTime},</if>
+       </trim>
+        where id = #{id}
+    </update>
+
+</mapper>

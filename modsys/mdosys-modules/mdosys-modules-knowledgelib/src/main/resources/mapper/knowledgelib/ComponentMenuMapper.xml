@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.knowledgelib.mapper.ComponentMenuMapper">
+
+    <resultMap type="ComponentMenu" id="ComponentMenuResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="menuType"    column="menu_type"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="icon"    column="icon"    />
+        <result property="filePath"    column="file_path"    />
+        <result property="permission"    column="permission"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectComponentMenuVo">
+        select id, name, parent_id, menu_type, create_by, create_time, icon, file_path, permission, remark from component_menu
+    </sql>
+
+    <select id="selectComponentMenuList" parameterType="ComponentMenu" resultMap="ComponentMenuResult">
+        <include refid="selectComponentMenuVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="parentId != null  and parentId != ''"> and parent_id = #{parentId}</if>
+            <if test="menuType != null  and menuType != ''"> and menu_type = #{menuType}</if>
+            <if test="icon != null  and icon != ''"> and icon = #{icon}</if>
+            <if test="filePath != null  and filePath != ''"> and file_path = #{filePath}</if>
+            <if test="permission != null "> and permission = #{permission}</if>
+            <if test="remark != null  and remark != ''"> and remark = #{remark}</if>
+        </where>
+    </select>
+
+    <select id="selectMenuListByUserId" parameterType="Long" resultMap="ComponentMenuResult">
+        select * from component_menu
+        where create_by = #{create_by}
+    </select>
+
+    <select id="selectPubMenuList" resultMap="ComponentMenuResult">
+        select * from component_menu
+        where permission = '0'
+    </select>
+
+    <select id="selectTreeMenuList" resultMap="ComponentMenuResult">
+        select * from component_menu
+        where menu_type = 'M'
+    </select>
+
+    <select id="selectComponentMenuById" parameterType="Long" resultMap="ComponentMenuResult">
+        <include refid="selectComponentMenuVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertComponentMenu" parameterType="ComponentMenu" useGeneratedKeys="true" keyProperty="id">
+        insert into component_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="parentId != null">parent_id,</if>
+            <if test="menuType != null">menu_type,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="icon != null">icon,</if>
+            <if test="filePath != null">file_path,</if>
+            <if test="permission != null">permission,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="parentId != null">#{parentId},</if>
+            <if test="menuType != null">#{menuType},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="filePath != null">#{filePath},</if>
+            <if test="permission != null">#{permission},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateComponentMenu" parameterType="ComponentMenu">
+        update component_menu
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="menuType != null">menu_type = #{menuType},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="filePath != null">file_path = #{filePath},</if>
+            <if test="permission != null">permission = #{permission},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteComponentMenuById" parameterType="Long">
+        delete from component_menu where id = #{id}
+    </delete>
+
+    <delete id="deleteComponentMenuByIds" parameterType="String">
+        delete from component_menu where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

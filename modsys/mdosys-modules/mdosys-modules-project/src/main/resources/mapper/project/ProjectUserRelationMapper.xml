@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mdosys.project.mapper.ProjectUserRelationMapper">
+
+    <resultMap id="projectUser" type="com.mdosys.project.domain.ProjectUserRelation">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="projectId" column="project_id"/>
+        <result property="permission" column="permission"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="baseSql">
+        id,user_id,project_id,permission,create_time,update_time
+    </sql>
+    <insert id="insertProjectUserRelation" parameterType="com.mdosys.project.domain.ProjectUserRelation">
+        insert into sys_relation_project_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="projectId != null">project_id,</if>
+            <if test="permission != null">permission,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="projectId != null">#{projectId},</if>
+            <if test="permission != null">#{permission},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime}</if>
+        </trim>;
+    </insert>
+
+    <delete id="deleteProjectRelation">
+        delete from sys_relation_project_user
+        where 1 = 1
+        and user_id = #{userId}
+        <if test="projectId != 0 ">
+            and project_id = #{projectId}
+        </if>
+    </delete>
+
+    <select id="selectProjectRelation" resultMap="projectUser">
+        select
+        <include refid="baseSql"/>
+        from sys_relation_project_user
+        where project_id = #{projectId}
+        and user_id = #{userId}
+        limit 1
+    </select>
+</mapper>

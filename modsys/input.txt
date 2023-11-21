@@ -1,0 +1,228 @@
+%enum  推进剂类型  STR  %
+单燃速装药{双燃速装药    单燃速装药}
+%end%
+%enum  装药构型  STR  %
+翼柱形{双燃速后翼   端燃+后翼   端燃   翼柱形   分段内孔   星孔  双燃速星孔+端燃  双燃速后翼+端燃  前翼柱}
+%end%
+%single  燃烧室外径<370.0;400.0>{mm}  FLT  %
+195
+%end%
+%single  燃烧室圆筒段长度{mm}  FLT  %
+630
+%end%
+%single  燃烧室壳体厚度{mm}  FLT  %
+2.80
+%end%
+%single  衬层厚度{mm}  FLT  %
+0.5
+%end%
+%enum  封头类型  STR  %
+椭球形封头{椭球形封头    蝶形封头}
+%end%
+%single  前封头长度{mm}  FLT  %
+30
+%end%
+%single  前接头长度{mm}  FLT  %
+10
+%end%
+%single  前封头绝热层厚度{mm}  FLT  %
+6
+%end%
+%single  前封头开口直径{mm}  FLT  %
+50
+%end%
+%single  绝热层厚度分段数  INT  %
+3
+%end%
+%ComArray  绝热层分段厚度{mm,mm}  FLT  3  2  %
+长度    厚度
+111.390  3.344
+385.530  1.068
+133.079  2.971
+%end%
+%single  后封头长度{mm}  FLT  %
+48
+%end%
+%single  后接头长度{mm}  FLT  %
+10
+%end%
+%single  后封头绝热层厚度{mm}  FLT  %
+12
+%end%
+%single  后封头开口直径{mm}  FLT  %
+120
+%end%
+%single  尾部装药长度{mm}  FLT  %
+0
+%end%
+%single  尾部收缩间隔{mm}  FLT  %
+0
+%end%
+%single  尾部倾角{deg}  FLT  %
+9
+%end%
+%single  尾部包覆宽度{mm}  FLT  %
+0
+%end%
+%single  头部圆孔直径{mm}  FLT  %
+190
+%end%
+%single  头部圆孔长度{mm}  FLT  %
+0
+%end%
+%single  内孔初始直径{mm}  FLT  %
+90
+%end%
+%single  内孔锥度  FLT  %
+0
+%end%
+%single  尾部内孔段长度{mm}  FLT  %
+0
+%end%
+%single  一级装药长度{mm}  FLT  %
+1600
+%end%
+%single  二级装药长度{mm}  FLT  %
+2741.000
+%end%
+%single  平均燃速比  FLT  %
+4.14
+%end%
+%single  翼槽数  INT  %
+11
+%end%
+%single  翼长{mm}  FLT  %
+80
+%end%
+%single  翼倾角{deg}  FLT  %
+30
+%end%
+%single  翼宽{mm}  FLT  %
+20
+%end%
+%single  外切圆直径{mm}  FLT  %
+165
+%end%
+%single  翼尖过渡圆弧半径{mm}  FLT  %
+100
+%end%
+%single  翼根过渡圆弧半径{mm}  FLT  %
+100
+%end%
+%single  翼尖倒圆半径{mm}  FLT  %
+5
+%end%
+%single  翼根倒圆半径{mm}  FLT  %
+5
+%end%
+%single  装药间隔宽度{mm}  FLT  %
+10
+%end%
+%single  端燃装药长度{mm}  FLT  %
+450
+%end%
+%single  燃速放大倍数{mm}  FLT  %
+2.2
+%end%
+%single  中心是否嵌银丝  STR  %
+是
+%end%
+%single  银丝径向位置{mm}  FLT  %
+64
+%end%
+%single  均布银丝数  INT  %
+6
+%end%
+%single  均布盲孔深度{mm}  FLT  %
+30
+%end%
+%single  均布盲孔直径{mm}  FLT  %
+20
+%end%
+%single  中心盲孔深度{mm}  FLT  %
+30
+%end%
+%single  中心盲孔直径{mm}  FLT  %
+20
+%end%
+%single  装药起始位置{mm}  FLT  %
+0
+%end%
+%single  装药前端开口直径{mm}  FLT  %
+200
+%end%
+%single  装药头部切角{deg}  FLT  %
+25
+%end%
+%single  内孔分段数  INT  %
+3
+%end%
+%ComArray  分段内孔参数{mm,mm,}  FLT  3  3  %
+位置     直径     锥度
+0    200    0
+500    300    0
+1000    400    0
+%end%
+%single  过渡段长度{mm}  FLT  %
+80
+%end%
+%single  星孔内切圆直径{mm}  FLT  %
+80
+%end%
+%single  星孔外切圆直径{mm}  FLT  %
+130
+%end%
+%single  星尖倒圆半径{mm}  FLT  %
+10
+%end%
+%single  星孔角分数  FLT  %
+0.8
+%end%
+%single  星边半角{deg}  FLT  %
+30
+%end%
+%single  星孔过渡圆弧半径{mm}  FLT  %
+0
+%end%
+%single  星角数  INT  %
+4
+%end%
+%single  增速级装药长度{mm}  FLT  %
+2000
+%end%
+%single  增速级柱段长度{mm}  FLT  %
+1800
+%end%
+%single  星孔深度{mm}  FLT  %
+1500
+%end%
+%single  内切圆直径{mm}  FLT  %
+200
+%end%
+%single  内圆弧半径{mm}  FLT  %
+300
+%end%
+%single  外圆弧半径{mm}  FLT  %
+500
+%end%
+%single  前翼长{mm}  FLT  %
+138
+%end%
+%single  前翼外切圆直径{mm}  FLT  %
+425
+%end%
+%single  前翼倾角{deg}  FLT  %
+27
+%end%
+%single  后翼长{mm}  FLT  %
+490
+%end%
+%single  后翼外切圆直径{mm}  FLT  %
+590
+%end%
+%single  后翼倾角{deg}  FLT  %
+35
+%end%
+%single  尾部圆孔长度{mm}  FLT  %
+60
+%end%

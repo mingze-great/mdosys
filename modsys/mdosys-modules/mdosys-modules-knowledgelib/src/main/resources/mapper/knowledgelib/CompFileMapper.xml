@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.knowledgelib.mapper.CompFileMapper">
+    <resultMap id="CompFileResult" type="CompFile">
+        <result property="fileId" column="file_id"/>
+        <result property="compId" column="comp_id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+    </resultMap>
+    <resultMap id="FileIdResult" type="Long">
+        <result property="fileId" column="file_id"/>
+    </resultMap>
+
+    <sql id="selectCompFileVo">
+        select file_id, comp_id, file_name, file_path from comp_file
+    </sql>
+
+    <select id="selectCompFileByCompId" parameterType="Long" resultMap="CompFileResult">
+        <include refid="selectCompFileVo"/>
+        where comp_id = #{arg0}
+    </select>
+
+    <select id="selectFileIdByCompId" parameterType="Long" resultMap="FileIdResult">
+        select file_id from comp_file
+        where comp_id = #{arg0}
+    </select>
+
+    <update id="updateCompFile" parameterType="CompFile">
+        update comp_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="compId != null">#{compId},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="filePath != null">#{filePath}</if>
+        </trim>
+        where file_id = #{fileId}
+    </update>
+
+    <delete id="deleteCompFileByCompId" parameterType="Long">
+        delete from comp_file where comp_id = #{arg0}
+    </delete>
+
+    <insert id="insertCompFile" parameterType="CompFile" useGeneratedKeys="true" keyProperty="fileId">
+        insert into comp_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="compId != null">comp_id,</if>
+            <if test="fileName != null">file_name,</if>
+            <if test="filePath != null">file_path</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="compId != null">#{compId},</if>
+            <if test="fileName != null">#{fileName},</if>
+            <if test="filePath != null">#{filePath}</if>
+        </trim>
+    </insert>
+
+</mapper>

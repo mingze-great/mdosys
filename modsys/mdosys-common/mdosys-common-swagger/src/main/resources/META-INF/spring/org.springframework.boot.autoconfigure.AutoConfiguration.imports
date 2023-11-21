@@ -1,0 +1,3 @@
+com.mdosys.common.swagger.config.SwaggerAutoConfiguration
+com.mdosys.common.swagger.config.SwaggerWebConfiguration
+com.mdosys.common.swagger.config.SwaggerBeanPostProcessor

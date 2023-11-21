@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.knowledgelib.mapper.ComponentMapper">
+
+    <resultMap type="Component" id="ComponentResult">
+        <result property="compId"    column="comp_id"    />
+        <result property="typeId"    column="type_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="compName"    column="comp_name"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="icon"    column="icon"    />
+        <result property="file"    column="file"    />
+        <result property="desc"    column="desc_"    />
+        <result property="auth"    column="auth"    />
+    </resultMap>
+
+    <sql id="selectComponentVo">
+        select comp_id, type_id, user_id, comp_name, create_time, icon, file, desc_, auth from component
+    </sql>
+
+    <select id="selectComponentList" parameterType="Component" resultMap="ComponentResult">
+        <include refid="selectComponentVo"/>
+        <where>
+            <if test="typeId != null "> and type_id = #{typeId}</if>
+            <if test="compName != null  and compName != ''"> and comp_name like concat('%', #{compName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectComponentByCompId" parameterType="Long" resultMap="ComponentResult">
+        <include refid="selectComponentVo"/>
+        where comp_id = #{compId}
+    </select>
+
+    <select id="selectPubComp" parameterType="Long" resultMap="ComponentResult">
+        <include refid="selectComponentVo"/>
+        where auth = 1
+    </select>
+
+    <select id="selectMyCompByUserId" parameterType="Long" resultMap="ComponentResult">
+        <include refid="selectComponentVo"/>
+        where user_id = #{arg0}
+    </select>
+
+    <select id="selectComponentByTypeId" parameterType="Long" resultMap="ComponentResult">
+        <include refid="selectComponentVo"/>
+        where type_id = #{typeId}
+    </select>
+
+    <select id="selectLastInsertId" resultType="Long">
+        select LAST_INSERT_ID()
+    </select>
+
+    <insert id="insertComponent" parameterType="Component" useGeneratedKeys="true" keyProperty="compId">
+        insert into component
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">type_id,</if>
+            <if test="userId !=null">user_id,</if>
+            <if test="compName != null and compName != ''">comp_name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="icon != null">icon,</if>
+            <if test="file != null">file,</if>
+            <if test="desc != null">desc_,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="typeId != null">#{typeId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="compName != null and compName != ''">#{compName},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="file != null">#{file},</if>
+            <if test="desc != null">#{desc},</if>
+         </trim>
+    </insert>
+
+    <update id="updateComponent" parameterType="Component">
+        update component
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="typeId != null">type_id = #{typeId},</if>
+            <if test="compName != null and compName != ''">comp_name = #{compName},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="file != null and file != ''">file = #{file},</if>
+            <if test="desc != null">desc_ = #{desc},</if>
+        </trim>
+        where comp_id = #{compId}
+    </update>
+
+    <delete id="deleteComponentByCompId" parameterType="Long">
+        delete from component where comp_id = #{compId}
+    </delete>
+
+    <delete id="deleteComponentByCompIds" parameterType="String">
+        delete from component where comp_id in
+        <foreach item="compId" collection="array" open="(" separator="," close=")">
+            #{compId}
+        </foreach>
+    </delete>
+</mapper>

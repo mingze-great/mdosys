@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mdosys.project.mapper.ProjectMapper">
+
+    <resultMap id="project" type="com.mdosys.project.domain.Project">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="description" column="description"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="Project_content">
+        id,name,code,description,user_id,del_flag,create_time,update_time
+    </sql>
+    <sql id="Project_contentV2">
+        ${alias}.id, ${alias}.name, ${alias}.code, ${alias}.description, ${alias}.user_id, ${alias}.del_flag,
+        ${alias}.create_time, ${alias}.update_time
+    </sql>
+
+    <insert id="insertProjectByCode" parameterType="com.mdosys.project.domain.Project" useGeneratedKeys="true"
+            keyProperty="id">
+
+        insert into sys_project
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="code != null">code,</if>
+            <if test="description != null">description,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time</if>
+        </trim>
+        VALUES
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="code != null">#{code},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime}</if>
+        </trim>
+    </insert>
+
+    <!--更新项目-->
+    <update id="updateProjectByCode" parameterType="com.mdosys.project.domain.Project" useGeneratedKeys="true"
+            keyProperty="id">
+        update sys_project
+        <set>
+            <if test="name != null and name != ''">`name` = #{name},</if>
+            <if test="description != null and description != ''">`description` = #{description},</if>
+            <if test="updateTime != null ">`update_time` = #{updateTime},</if>
+        </set>
+        where `code` = #{code}
+    </update>
+
+    <!-- 删除项目根据id   -->
+    <update id="delProjectByID" parameterType="Long">
+        update sys_project
+        set `del_flag` = 0
+        where `id` = #{projectId}
+    </update>
+
+    <!--删除项目根据code-->
+    <update id="delProjectByCode">
+        update sys_project
+        set `del_flag` = 0
+        where `code` = #{projectCode}
+    </update>
+
+    <select id="selectProjectByCode" resultMap="project">
+        select
+        <include refid="Project_content"/>
+        from sys_project where `code` = #{projectCode}
+    </select>
+
+    <select id="selectProjectById" resultMap="project">
+        select
+        <include refid="Project_content"/>
+        from sys_project where `id` = #{projectId}
+    </select>
+
+    <select id="selectProjectByName" resultMap="project">
+        select
+        <include refid="Project_contentV2">
+            <property name="alias" value="p"/>
+        </include>
+        from sys_project p, sys_relation_project_user rel
+        where p.id = rel.project_id
+        and rel.user_id = #{userId}
+        and p.name = #{projectName}
+    </select>
+
+    <select id="queryProjectByName" resultMap="project">
+        select
+        <include refid="Project_contentV2">
+            <property name="alias" value="p"/>
+        </include>
+        from sys_project p, sys_relation_project_user rel
+        where p.id = rel.project_id and rel.user_id = #{userId} and p.del_flag = 1 and p.name like
+        concat('%',#{projectName},'%')
+    </select>
+
+    <select id="queryProjectByUserId" resultMap="project">
+        select
+        <include refid="Project_contentV2">
+            <property name="alias" value="p"/>
+        </include>
+        from sys_project p,sys_relation_project_user rel
+        where p.id = rel.project_id and rel.user_id = #{userId} and p.del_flag = 1
+    </select>
+</mapper>

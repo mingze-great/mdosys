@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.knowledgelib.mapper.CompTypeMapper">
+
+    <resultMap type="CompType" id="CompTypeResult">
+        <result property="typeId"    column="type_id"    />
+        <result property="parentId"    column="parent_id"    />
+        <result property="ancestors"    column="ancestors"    />
+        <result property="typeName"    column="type_name"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="desc"    column="desc_"    />
+    </resultMap>
+
+    <sql id="selectCompTypeVo">
+        select type_id, parent_id, ancestors, type_name, order_num, create_by, create_time, desc_ from comp_type
+    </sql>
+
+    <select id="selectCompTypeList" parameterType="CompType" resultMap="CompTypeResult">
+        <include refid="selectCompTypeVo"/>
+        <where>
+            <if test="parentId != null "> and parent_id = #{parentId}</if>
+            <if test="ancestors != null  and ancestors != ''"> and ancestors = #{ancestors}</if>
+            <if test="typeName != null  and typeName != ''"> and type_name like concat('%', #{typeName}, '%')</if>
+            <if test="desc != null  and desc != ''"> and desc_ = #{desc}</if>
+        </where>
+    </select>
+
+    <select id="selectCompTypeByTypeId" parameterType="Long" resultMap="CompTypeResult">
+        <include refid="selectCompTypeVo"/>
+        where type_id = #{typeId}
+    </select>
+
+    <insert id="insertCompType" parameterType="CompType" useGeneratedKeys="true" keyProperty="typeId">
+        insert into comp_type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">parent_id,</if>
+            <if test="ancestors != null">ancestors,</if>
+            <if test="typeName != null and typeName != ''">type_name,</if>
+            <if test="orderNum != null">order_num,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="desc != null">desc_,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">#{parentId},</if>
+            <if test="ancestors != null">#{ancestors},</if>
+            <if test="typeName != null and typeName != ''">#{typeName},</if>
+            <if test="orderNum != null">#{orderNum},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="desc != null">#{desc},</if>
+         </trim>
+    </insert>
+
+    <update id="updateCompType" parameterType="CompType">
+        update comp_type
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="parentId != null">parent_id = #{parentId},</if>
+            <if test="ancestors != null">ancestors = #{ancestors},</if>
+            <if test="typeName != null and typeName != ''">type_name = #{typeName},</if>
+            <if test="orderNum != null">order_num = #{orderNum},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="desc != null">desc_ = #{desc},</if>
+        </trim>
+        where type_id = #{typeId}
+    </update>
+
+    <delete id="deleteCompTypeByTypeId" parameterType="Long">
+        delete from comp_type where type_id = #{typeId}
+    </delete>
+
+    <delete id="deleteCompTypeByTypeIds" parameterType="String">
+        delete from comp_type where type_id in
+        <foreach item="typeId" collection="array" open="(" separator="," close=")">
+            #{typeId}
+        </foreach>
+    </delete>
+</mapper>

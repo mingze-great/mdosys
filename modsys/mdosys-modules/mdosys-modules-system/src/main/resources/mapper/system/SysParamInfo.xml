@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.system.mapper.SysParamInfoMapper">
+
+    <resultMap type="com.mdosys.common.core.enums.Paraminfo" id="SysParaminfoResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="fileId"    column="file_id"    />
+        <result property="value"    column="value"    />
+        <result property="iotype"    column="iotype"    />
+        <result property="sign"    column="sign"    />
+        <result property="unit"    column="unit"    />
+        <result property="lowerLimit"    column="lower_limit"    />
+        <result property="upperLimit"    column="upper_limit"    />
+        <result property="columnNames"    column="description"    />
+        <result property="rowNames"    column="row_names"    />
+        <result property="enumCons"    column="enum_cons"    />
+        <result property="rows"    column="rows"    />
+        <result property="columns"    column="columns"    />
+        <result property="remark"    column="remark"/>
+    </resultMap>
+
+    <insert id="insertSysParamInfo" parameterType="com.mdosys.common.core.enums.Paraminfo" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_paraminfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="fileId != null">file_id,</if>
+            <if test="value != null">value,</if>
+            <if test="iotype != null">iotype,</if>
+            <if test="sign != null">sign,</if>
+            <if test="unit != null">unit,</if>
+            <if test="lowerLimit != null">lower_limit,</if>
+            <if test="upperLimit != null">upper_limit,</if>
+            <if test="columnNames != null">column_names,</if>
+            <if test="rowNames != null">row_names,</if>
+            <if test="enumCons != null">enum_cons,</if>
+            <if test="rows != null">`rows`,</if>
+            <if test="columns != null">columns,</if>
+            <if test="remark != null">remark,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="fileId != null">#{fileId},</if>
+            <if test="value != null">#{value},</if>
+            <if test="iotype != null">#{iotype},</if>
+            <if test="sign != null">#{sign},</if>
+            <if test="unit != null">#{unit},</if>
+            <if test="lowerLimit != null">#{lowerLimit},</if>
+            <if test="upperLimit != null">#{upperLimit},</if>
+            <if test="columnNames != null">#{columnNames},</if>
+            <if test="rowNames != null">#{rowNames},</if>
+            <if test="enumCons != null">#{enumCons},</if>
+            <if test="rows != null">#{rows},</if>
+            <if test="columns != null">#{columns},</if>
+            <if test="remark != null">#{remark},</if>
+        </trim>
+    </insert>
+
+    <select id="selectSysParamList" parameterType="SysComponentFile" resultMap="SysParaminfoResult">
+        SELECT * FROM `sys_paraminfo`
+            LEFT JOIN sys_component_file ON sys_paraminfo.file_id = sys_component_file.id
+            LEFT JOIN sys_component ON sys_component_file.comp_id = sys_component.id
+                 WHERE sys_component_file.comp_id = #{id} and sys_component_file.type = #{type}
+    </select>
+
+<!--    <update id="updateSysComponent" parameterType="SysComponent">-->
+<!--        update sys_component-->
+<!--        <trim prefix="SET" suffixOverrides=",">-->
+<!--            <if test="name != null">name = #{name},</if>-->
+<!--            <if test="classId != null">class_id = #{classId},</if>-->
+<!--            <if test="updateTime != null">update_time = #{updateTime},</if>-->
+<!--            <if test="icon != null">icon = #{icon},</if>-->
+<!--            <if test="publicComp != null">public_comp = #{publicComp},</if>-->
+<!--            <if test="description != null">description = #{description},</if>-->
+<!--            <if test="type != null">type = #{type},</if>-->
+<!--        </trim>-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
+<!--    <update id="revokeSysComponent" parameterType="Long">-->
+<!--        update sys_component-->
+<!--        <trim prefix="SET" suffixOverrides=",">-->
+<!--            permission = 0-->
+<!--        </trim>-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
+<!--    <delete id="deleteSysComponentById" parameterType="Long">-->
+<!--        delete from sys_component where id = #{id}-->
+<!--    </delete>-->
+
+<!--    <delete id="deleteSysComponentByIds" parameterType="String">-->
+<!--        delete from sys_component where id in-->
+<!--        <foreach item="id" collection="array" open="(" separator="," close=")">-->
+<!--            #{id}-->
+<!--        </foreach>-->
+<!--    </delete>-->
+</mapper>

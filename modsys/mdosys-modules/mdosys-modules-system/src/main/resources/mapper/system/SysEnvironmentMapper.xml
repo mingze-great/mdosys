@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.system.mapper.SysEnvironmentMapper">
+
+    <resultMap type="SysEnvironment" id="SysEnvironmentResult">
+        <result property="envirId"    column="envir_id"    />
+        <result property="envirName"    column="envir_name"    />
+        <result property="workerId"    column="worker_id"    />
+        <result property="code"    column="code"    />
+        <result property="config"    column="config"    />
+        <result property="description"    column="description"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysEnvironmentVo">
+        select envir_id, envir_name, worker_id, code, config, description, create_time, update_time from sys_environment
+    </sql>
+
+    <select id="selectSysEnvironmentList" parameterType="SysEnvironment" resultMap="SysEnvironmentResult">
+        <include refid="selectSysEnvironmentVo"/>
+        <where>
+            <if test="envirName != null  and envirName != ''"> and envir_name like concat('%', #{envirName}, '%')</if>
+            <if test="workerId != null "> and worker_id = #{workerId}</if>
+        </where>
+    </select>
+
+    <select id="selectSysEnvironmentByEnvirId" parameterType="Long" resultMap="SysEnvironmentResult">
+        <include refid="selectSysEnvironmentVo"/>
+        where envir_id = #{envirId}
+    </select>
+
+    <insert id="insertSysEnvironment" parameterType="SysEnvironment" useGeneratedKeys="true" keyProperty="envirId">
+        insert into sys_environment
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="envirName != null">envir_name,</if>
+            <if test="workerId != null">worker_id,</if>
+            <if test="code != null">code,</if>
+            <if test="config != null">config,</if>
+            <if test="description != null">description,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="envirName != null">#{envirName},</if>
+            <if test="workerId != null">#{workerId},</if>
+            <if test="code != null">#{code},</if>
+            <if test="config != null">#{config},</if>
+            <if test="description != null">#{description},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysEnvironment" parameterType="SysEnvironment">
+        update sys_environment
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="envirName != null">envir_name = #{envirName},</if>
+            <if test="workerId != null">worker_id = #{workerId},</if>
+            <if test="code != null">code = #{code},</if>
+            <if test="config != null">config = #{config},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where envir_id = #{envirId}
+    </update>
+
+    <delete id="deleteSysEnvironmentByEnvirId" parameterType="Long">
+        delete from sys_environment where envir_id = #{envirId}
+    </delete>
+
+    <delete id="deleteSysEnvironmentByEnvirIds" parameterType="String">
+        delete from sys_environment where envir_id in
+        <foreach item="envirId" collection="array" open="(" separator="," close=")">
+            #{envirId}
+        </foreach>
+    </delete>
+</mapper>

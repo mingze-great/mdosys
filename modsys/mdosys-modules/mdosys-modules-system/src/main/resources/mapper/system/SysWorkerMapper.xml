@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.system.mapper.SysWorkerMapper">
+
+    <resultMap type="SysWorker" id="SysWorkerResult">
+        <result property="workerId"    column="worker_id"    />
+        <result property="workerName"    column="worker_name"    />
+        <result property="addrList"    column="addr_list"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectSysWorkerVo">
+        select worker_id, worker_name, addr_list, remark, create_time, update_time from sys_worker
+    </sql>
+
+    <select id="selectSysWorkerList" parameterType="SysWorker" resultMap="SysWorkerResult">
+        <include refid="selectSysWorkerVo"/>
+        <where>
+            <if test="workerName != null  and workerName != ''"> and worker_name like concat('%', #{workerName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectSysWorkerByWorkerId" parameterType="Long" resultMap="SysWorkerResult">
+        <include refid="selectSysWorkerVo"/>
+        where worker_id = #{workerId}
+    </select>
+
+    <insert id="insertSysWorker" parameterType="SysWorker" useGeneratedKeys="true" keyProperty="workerId">
+        insert into sys_worker
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="workerName != null">worker_name,</if>
+            <if test="addrList != null">addr_list,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workerName != null">#{workerName},</if>
+            <if test="addrList != null">#{addrList},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysWorker" parameterType="SysWorker">
+        update sys_worker
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="workerName != null">worker_name = #{workerName},</if>
+            <if test="addrList != null">addr_list = #{addrList},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where worker_id = #{workerId}
+    </update>
+
+    <delete id="deleteSysWorkerByWorkerId" parameterType="Long">
+        delete from sys_worker where worker_id = #{workerId}
+    </delete>
+
+    <delete id="deleteSysWorkerByWorkerIds" parameterType="String">
+        delete from sys_worker where worker_id in
+        <foreach item="workerId" collection="array" open="(" separator="," close=")">
+            #{workerId}
+        </foreach>
+    </delete>
+</mapper>

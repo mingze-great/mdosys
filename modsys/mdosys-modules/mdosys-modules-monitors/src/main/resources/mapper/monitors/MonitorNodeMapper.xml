@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.monitors.mapper.MonitorNodeMapper">
+    <resultMap type="MonitorNodeItem" id="MonitorNodeItemResult">
+        <result property="nodeId"    column="node_id"    />
+        <result property="taskName"    column="task_name"    />
+        <result property="code"    column="code"    />
+        <result property="processInstanceId"    column="process_instance_id"    />
+        <result property="description"    column="description"    />
+        <result property="creator"    column="creator"    />
+        <result property="taskProgress"    column="task_progress"    />
+        <result property="taskType"    column="task_type"    />
+        <result property="runTime"    column="run_time"    />
+        <result property="runLog"    column="run_log"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="endTime"    column="end_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="runFlag"    column="run_flag"    />
+
+    </resultMap>
+
+    <select id="selectMonitorNodeList" parameterType="MonitorNodeItem" resultMap="MonitorNodeItemResult">
+        select * from sys_node_instance where process_instance_id=#{processInstanceId}
+    </select>
+
+<!--    &lt;!&ndash;    奇怪的问题，这个地方的mapper出现问题会导致其他地方mapper报错&ndash;&gt;-->
+<!--    <select id="selectMonitorProgressById" parameterType="MonitorProcessItem" resultMap="MonitorProcessItemResult">-->
+<!--        select * from mdosys_monitor_process where id=#{id}-->
+<!--    </select>-->
+
+<!--    <update id="updateMonitorProcess" parameterType="MonitorProcessItem">-->
+<!--        update mdosys_monitor_process-->
+<!--        <trim prefix="SET"  suffixOverrides=",">-->
+<!--            <if test="taskProgress != null">task_progress = #{taskProgress},</if>-->
+<!--            <if test="runTime != null">run_time = #{runTime},</if>-->
+<!--            <if test="runFlag != null">run_flag = #{runFlag},</if>-->
+<!--            <if test="endTime != null">end_time = #{endTime},</if>-->
+<!--            <if test="startTime != null">start_time = #{startTime},</if>-->
+<!--        </trim>-->
+<!--        where id = #{id}-->
+<!--    </update>-->
+
+</mapper>

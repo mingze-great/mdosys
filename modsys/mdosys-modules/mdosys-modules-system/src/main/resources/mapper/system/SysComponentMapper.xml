@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mdosys.system.mapper.SysComponentMapper">
+    
+    <resultMap type="SysComponent" id="SysComponentResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="classId"    column="class_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="userId"    column="user_id"    />
+        <result property="icon"    column="icon"    />
+        <result property="publicComp"    column="public_comp"    />
+        <result property="param"    column="param"    />
+        <result property="description"    column="description"    />
+        <result property="code"    column="code"    />
+        <result property="createBy"    column="user_name"    />
+        <result property="type"    column="type"    typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+    </resultMap>
+
+    <sql id="selectSysComponentVo">
+        select id, name, class_id, create_time, update_time, user_id, icon, public_comp, param, description, code, type from sys_component
+    </sql>
+
+    <select id="selectSysComponentList" parameterType="SysComponent" resultMap="SysComponentResult">
+<!--        <include refid="selectSysComponentVo"/>-->
+        SELECT * FROM sys_component LEFT JOIN sys_user ON sys_component.user_id = sys_user.user_id
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="publicComp != null "> and publicComp = #{publicComp}</if>
+        </where>
+        order by class_id desc
+    </select>
+
+    <select id="selectPubSysComponentList" parameterType="Long" resultMap="SysComponentResult">
+        <include refid="selectSysComponentVo"/>
+        <where>
+            permission = #{permission}
+        </where>
+        order by menu_type desc
+    </select>
+    
+    <select id="selectSysComponentById" parameterType="Long" resultMap="SysComponentResult">
+        <include refid="selectSysComponentVo"/>
+        where id = #{id}
+    </select>
+
+        
+    <insert id="insertSysComponent" parameterType="SysComponent" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_component
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="classId != null">class_id,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="icon != null">icon,</if>
+            <if test="publicComp != null">public_comp,</if>
+            <if test="param != null">param,</if>
+            <if test="description != null">description,</if>
+            <if test="code != null">code,</if>
+            <if test="type != null">type,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="classId != null">#{classId},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="icon != null">#{icon},</if>
+            <if test="publicComp != null">#{publicComp},</if>
+            <if test="param != null">#{param},</if>
+            <if test="description != null">#{description},</if>
+            <if test="code != null">#{code},</if>
+            <if test="type != null">#{type},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSysComponent" parameterType="SysComponent">
+        update sys_component
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="classId != null">class_id = #{classId},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="icon != null">icon = #{icon},</if>
+            <if test="publicComp != null">public_comp = #{publicComp},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="type != null">type = #{type},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="revokeSysComponent" parameterType="Long">
+        update sys_component
+        <trim prefix="SET" suffixOverrides=",">
+            permission = 0
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteSysComponentById" parameterType="Long">
+        delete from sys_component where id = #{id}
+    </delete>
+
+    <delete id="deleteSysComponentByIds" parameterType="String">
+        delete from sys_component where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,46 @@
+/**
+*这个文件可以保留全局scss变量 便于对全局样式进行控制
+ TODO Tips: 注意区分导航栏与菜单栏的区别
+*/
+$global_main_color: rgb(64, 158, 255, 1);
+// $global_main_color:rgb(56,75,113,1);
+$global_second_color: rgb(244, 244, 244);
+$global_third_color: rgba(243, 243, 243);
+
+$global_bg_color: #ffffff; //全局默认背景
+$global_grey_bg: #f7f7f7;
+
+$global_bd_style: 1px solid; //border相关数据
+$global_bd_color: #dcdfe6;
+$global_bd_shadow: 1px 1px 7px 2px rgba(150, 150, 150, 0.09); //
+$global_bd_radius: 5px;
+
+$global_text_color: #606266; //文字颜色
+
+$global_transition_duration: 80ms; //全局动画时间间隔
+
+$topNavHeight: 30px; //顶部导航栏高度
+
+$layoutTopMenuHight: 30px; //包含顶部菜单栏页面的 顶部菜单栏高度
+$layoutTopMenuColor: rgba(240, 240, 240, 0.95);
+$layoutTopMeunBorderRadius: 2px; //顶部菜单栏的圆角大小
+$layoutTopMeunItem_bgcolor: rgb(252, 252, 252);
+
+$processLayoutStatusbarHeight: 22px; //流程任务界面底部状态栏高度
+$processLayoutResourcesTreeMinWidth: 285px;
+$processLayoutResourcesTreebgColor: $global_third_color;
+
+$processStatusBarBgColor: $global_main_color;
+$processMainColor: rgb(245, 245, 245);
+
+$nodeBorderRadius: 4px;
+
+
+$global_aside_width: 200px;
+
+//小按钮样式
+.el-button-main {
+  width: 70px;
+  margin: 0 5px;
+  align-items: center;
+}

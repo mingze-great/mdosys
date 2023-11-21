@@ -1,0 +1,83 @@
+# Tomcat
+server:
+  port: 9305
+
+# Spring
+spring:
+  application:
+    # 应用名称
+    name: mdosys-project
+  profiles:
+    # 环境配置
+    active: dev
+  cloud:
+    nacos:
+      discovery:
+        # 服务注册地址
+        server-addr: 121.37.104.130:8848
+      config:
+        # 配置中心地址
+        server-addr: 121.37.104.130:8848
+        # 配置文件格式
+        file-extension: yml
+        # 共享配置
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+
+
+#  redis:
+#    host: 121.37.104.130
+#    port: 5279
+#    password:
+#    #连接超时时间（毫秒）
+#    timeout: 10000s
+#    #redis连接池设置
+#    lettuce:
+#      pool:
+#        #最大连接数据库连接数,设 -1 为没有限制
+#        max-active: 8
+#        #连接池中的最大空闲连接,设 0 为没有限制
+#        max-idle: 8
+#        #连接池中的最小空闲连接,设 0 为没有限制
+#        min-idle: 0
+#        #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制
+#        max-wait: -1
+#  datasource:
+#    druid:
+#      stat-view-servlet:
+#        enabled: true
+#        loginUsername: admin
+#        loginPassword: 123456
+#    dynamic:
+#      druid:
+#        initial-size: 5
+#        min-idle: 5
+#        maxActive: 20
+#        maxWait: 60000
+#        # timeBetweenEvictionRunsMillis: 60000
+#        # minEvictableIdleTimeMillis: 300000
+#        # validationQuery: SELECT 1 FROM DUAL
+#        # testWhileIdle: true
+#        # testOnBorrow: false
+#        # testOnReturn: false
+#        # poolPreparedStatements: true
+#        # maxPoolPreparedStatementPerConnectionSize: 20
+#        # filters: stat,slf4j
+#        # connectionProperties: druid.stat.mergeSql\=true;druid.stat.slowSqlMillis\=5000
+#      datasource:
+#        # 主库数据源
+#        master:
+#          url: jdbc:mysql://121.37.104.130:2206/mdosys-cloud?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+#          driver-class-name: com.mysql.cj.jdbc.Driver
+#          username: root
+#          password: hwjroot
+#          type: com.alibaba.druid.pool.DruidDataSource
+#mybatis:
+#  type-aliases-package: com.mdosys.project.domain
+#  mapper-locations: classpath:/mapper/project/*.xml
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#pagehelper:
+#  reasonable: true
+
